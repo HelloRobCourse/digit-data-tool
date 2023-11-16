@@ -97,6 +97,9 @@ class SceneView extends React.Component {
         }
 
         this.ctx[idx].drawImage(img, 0, 0, this.pix, this.pix);
+        let imgData = this.ctx[idx].getImageData(0, 0, this.pix, this.pix);
+        imgData = this.makeGrayscaleImage(imgData);
+        this.ctx[idx].putImageData(imgData, 0, 0);
 
         let is_valid = new_states.every( v => v === "valid" );
         let status = is_valid ? "Complete" : "Incomplete";
@@ -110,6 +113,21 @@ class SceneView extends React.Component {
     return valid;
   }
 
+  makeGrayscaleImage(imgData) {
+    for (let i = 0; i < imgData.data.length; i += 4) {
+      let count = imgData.data[i] + imgData.data[i + 1] + imgData.data[i + 2];
+      let colour = 0;
+      if (count > 510) colour = 255;
+      else if (count > 255) colour = 127.5;
+
+      imgData.data[i] = colour;
+      imgData.data[i + 1] = colour;
+      imgData.data[i + 2] = colour;
+      imgData.data[i + 3] = 255;
+    }
+    return imgData;
+  }
+
   render() {
     const indices = Array.from({ length: 10 }).map((_, i) => i);
     let status_class = this.state.is_valid ? "valid" : "invalid";
@@ -121,25 +139,29 @@ class SceneView extends React.Component {
           <p>Drag and drop your images here to upload.</p>
         </div>
 
-        <table>
-          <tbody>
-            {[Array(2).fill().map((_, i) =>
-                <tr key={ i } >
-                  { indices.slice(i * 5, (i + 1) * 5).map(idx =>
-                    <td key={ "canvas" + idx } className={this.state.img_states[idx]}
-                        onDragOver={(e) => this.handleDragOver(e)} onDrop={(e) => this.handleDrop(e, idx)}>
-                      <canvas ref={this.canvases[idx]} id={"canvas" + idx}
-                              width={this.pix} height={this.pix}></canvas>
-                    </td>
-                  )}
-                </tr>
-            )]
-            }</tbody>
-        </table>
+        <div className="row">
+        <div className="img-container">
+          <button className="button" onClick={(e) => this.resetImages(e)}>
+            Reset Images
+          </button>
 
-        <button className="button" onClick={(e) => this.resetImages(e)}>
-          Reset Images
-        </button>
+          <table className="img-table">
+            <tbody>
+              {[Array(2).fill().map((_, i) =>
+                  <tr key={ i } >
+                    { indices.slice(i * 5, (i + 1) * 5).map(idx =>
+                      <td key={ "canvas" + idx } className={this.state.img_states[idx]}
+                          onDragOver={(e) => this.handleDragOver(e)} onDrop={(e) => this.handleDrop(e, idx)}>
+                        <canvas ref={this.canvases[idx]} id={"canvas" + idx}
+                                width={this.pix} height={this.pix}></canvas>
+                      </td>
+                    )}
+                  </tr>
+              )]
+              }</tbody>
+          </table>
+        </div>
+        </div>
 
         <div className="status-wrapper">
           <span className={"status " + status_class}>{this.state.status}</span>

@@ -37,7 +37,7 @@ a:hover {
 }
 
 .button {
-  margin: auto;
+  margin: 10px 20px;
   display: block;
   background-color: #2F65A7;
   border: none;
@@ -62,7 +62,6 @@ table {
   border-spacing: 0;
   max-width: 100%;
   width: 400px;
-  margin: 0 auto 20px auto;
 }
 
 td {
@@ -89,7 +88,8 @@ td.invalid {
 
 .drop-imgs {
   background-color: #eff5ff;
-  width: 80%;
+  width: 600px;
+  max-width: 100%;
   height: 100px;
   border: 2px dashed #4472C4;
   border-radius: 10px;
@@ -98,6 +98,10 @@ td.invalid {
 
 .drop-imgs > p {
   text-align: center;
+}
+
+.status-wrapper {
+  margin-top: 20px;
 }
 
 span.status {
@@ -112,4 +116,18 @@ span.status {
 
 span.status.valid {
   background-color: #70AD47;
+}
+
+.img-container {
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  max-width: 100%;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
 }
